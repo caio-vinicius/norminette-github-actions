@@ -1,0 +1,33 @@
+name: CI Norminette
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.c'
+      - '**.h'
+  push:
+    paths:
+      - '**.c'
+      - '**.h'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Norminette
+      run: |
+        python -m pip install --upgrade pip
+        pip install norminette==3.3.51
+    - name: Linter with Norminette
+      run: |
+        norminette
